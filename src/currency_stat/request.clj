@@ -6,7 +6,7 @@
   [v n]
   (float (/ v n)))
 
-; [int string] -> list of {:day N :CharCode Value} 
+; [int string [list of keywords]] -> list of {:day N :CharCode Value} 
 (defn get-currency
   [days url currency-keys]
   (loop [days days
@@ -23,7 +23,8 @@
         (recur
          (dec days) prev-url (->> values
                                   (zipmap currency-keys)
-                                  (into {:day days})
+                                  (into {:date (api-map :Timestamp)
+                                         :day days})
                                   (conj acc)))))))
 
 
