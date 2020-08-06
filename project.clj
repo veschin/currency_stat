@@ -7,5 +7,5 @@
                  [org.clojure/data.json "1.0.0"]
                  [clj-http "3.10.1"]
                  [org.clojure/java.jdbc "0.7.11"]
-                 [org.xerial/sqlite-jdbc "3.23.1"]]
-  :repl-options {:init-ns currency-stat.core})
+                 [org.xerial/sqlite-jdbc "3.32.3.2"]]
+  :repl-options {:init-ns server.core})
