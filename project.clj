@@ -13,10 +13,11 @@
 
                  ;web server
                  [compojure "1.6.2"]
-                 [hiccup "1.0.5"]
                  [http-kit "2.4.0"]
-                
+
+                 ;templates
+                 [hiccup "1.0.5"]
+
                  ;clientside
-                 [org.clojure/clojurescript "1.10.764"]
-                 ]
+                 [org.clojure/clojurescript "1.10.764"]]
   :repl-options {:init-ns server.core})
