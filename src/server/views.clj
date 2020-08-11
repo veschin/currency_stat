@@ -4,11 +4,12 @@
 
 (def url "https://www.cbr-xml-daily.ru/daily_json.js")
 
+
 (defn get-index-page []
   (html5
    [:head
     [:title "Главная страница"]
-    (hpage/include-css "index.css")
+    (hpage/include-css "css/index.css")
     (hpage/include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")]
    [:body
     [:div.container
@@ -19,19 +20,23 @@
       [:div.col]
       [:select.custom-select.currency-select.mr-1.col-4 {:multiple true}
 
-       (comment
-         [:option {:value :CharCode} "Name"])
+      ;;  [:option {:value :CharCode} "Name"]
        (map
         #(vec
           (concat [:option]  [{:value (str (second %))} (str (first %))])) (get-char-codes url))]
-      [:select.custom-select.ml-1.col-4 {:multiple true}]
-      [:div.col]]
-
+      [:div.col] 
+      [:select.custom-select.user-select.ml-1.col-4 {:multiple true}]]
+     
      [:div.row.mt-3
       [:div.col]
       [:div.input-group.col-3
        [:div.input-group-prepend
         [:span.input-group-text "Количество дней"]]
        [:input.form-control]]
-      [:div.btn.btn-dark.col-2.ml-1 "Запросить данные"]
-      [:div.col]]]]))
+      [:button.btn.btn-dark.col-2.ml-1 "Запросить данные"]
+      [:div.col]]]
+    (hpage/include-js "js/main.js")]))
+
+
+(defn post-currency [req]
+  )
