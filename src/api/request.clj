@@ -5,6 +5,7 @@
 (defn nominal-to-one
   [v n]
   (float (/ v n)))
+
 (def url "https://www.cbr-xml-daily.ru/daily_json.js")
 
 ; [str] -> [vector of char codes]
@@ -18,7 +19,7 @@
 
 ; [int string [list of keywords]] -> [vector of {:day N :CharCode Value}] 
 (defn get-currency
-  [days url currency-keys]
+  [days currency-keys]
   (loop [days days
          url url
          acc []]
