@@ -1,15 +1,14 @@
 (ns client
-  (:require [reagent.core :as r]
-            [ajax.core :refer [GET POST]]
-            [clojure.browser.dom :as dom]))
+  (:require [ajax.core :refer [GET POST]]
+            [cljs.tools.reader.edn :as edn]))
 
 ;; CONSTS
 (def btn (.querySelector js/document "button"))
 
-(def select {:currency-select (array-seq (.querySelector js/document ".currency-select"))
-             :user-select (array-seq (.querySelector js/document ".user-select"))})
+(def select {:currency-select (.querySelector js/document ".currency-select")
+             :user-select (.querySelector js/document ".user-select")})
 
-(def children (.-children (select :currency-select)))
+(def children (array-seq (.-children (select :currency-select))))
 
 ;; FUNCS
 (defn add-listener
@@ -24,15 +23,25 @@
   [el coll]
   (apply = false (map #(= (.-value el) (.-value %)) coll)))
 
-(defn post-options 
-  []
-  (let [options (select :user-select) 
-        input (.-value (.querySelector js/document ".form-control"))] 
-    (if (and (not= input "") (not= options nil)) 
-      (POST "/currency" {:body {:days input
-                                :char-codes options}}) 
-      nil))
+(defn listen-response [resp]
+  (js/console.log  (str (map #(% :date) (edn/read-string resp))))
   )
+
+(defn post-currency
+  []
+  (let [char-codes (.-children (select :user-select))
+        days (.-value (.querySelector js/document ".form-control"))]
+    
+    (if (and (not= days "") (not= (.-length char-codes) nil))
+
+      (POST "/currency" {:format :json
+                         :handler listen-response
+                         
+                         :body (.stringify js/JSON
+                                           (clj->js
+                                            {:days days
+                                             :char-codes (map #(subs (.-value %) 1) (array-seq char-codes))}))})
+      nil)))
 
 ;; TIME TO DO
 ;; add listeners to all options in option list
@@ -40,10 +49,10 @@
  [x children]
   (add-listener
    x "click"
-  ;;  if el is unique then append else nil
-   #(if (unique? x (select :user-select))
+   ;;  if el is unique then append else nil
+   #(if (unique? x (array-seq (select :user-select)))
       (append-clone-el (select :user-select) x)
       nil)))
 
-(add-listener btn "click" post-options)
+(add-listener btn "click" post-currency)
 
