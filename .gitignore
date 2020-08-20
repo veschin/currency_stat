@@ -31,3 +31,5 @@ pom.xml.asc
 
 .hgignore
 .hg/
+currency_client/.calva/output-window/output.repl-file
+currency_client/.calva/output-window/.clj-kondo/.cache/2020.07.29/lock
