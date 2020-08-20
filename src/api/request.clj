@@ -8,9 +8,8 @@
 
 (def url "https://www.cbr-xml-daily.ru/daily_json.js")
 
-; [str] -> [vector of char codes]
-(defn get-char-codes
-  [url]
+; [vector of char codes]
+(defn get-char-codes []
   (let [api-map (json/read-str ((client/get url) :body) :key-fn keyword)
         currency (api-map :Valute)
         names (map #((currency %) :Name) (keys currency))
@@ -19,7 +18,7 @@
 
 ; [int string [list of keywords]] -> [vector of {:day N :CharCode Value}] 
 (defn get-currency
-  [days currency-keys]
+  [days char-codes]
   (loop [days days
          url url
          acc []]
@@ -27,15 +26,17 @@
     (let [api-map (json/read-str ((client/get url) :body) :key-fn keyword)
           currency (api-map :Valute)
           prev-url (str "https:" (api-map :PreviousURL))
-          values (map #(format "%.2f" (nominal-to-one ((currency %) :Value) ((currency %) :Nominal))) currency-keys)]
+          values (map
+                  #(format "%.2f"
+                           (nominal-to-one ((currency %) :Value) ((currency %) :Nominal))) char-codes)]
 
       (if (zero? days)
         acc
         (recur
          (dec days) prev-url (->> values
-                                  (zipmap currency-keys)
-                                  (into {:date (subs (api-map :Timestamp) 0 10)
-                                         :day days})
+                                  (zipmap char-codes)
+                                  (assoc {:date (subs (api-map :Timestamp) 0 10)
+                                          :day days} :values)
                                   (conj acc)))))))
 
 
