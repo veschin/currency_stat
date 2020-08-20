@@ -1,9 +1,6 @@
 (ns server.views
   (:require [hiccup.page :as hpage :refer [html5]]
-            [api.request :refer [get-char-codes]]))
-
-(def url "https://www.cbr-xml-daily.ru/daily_json.js")
-
+            [api.request :as req]))
 
 (defn get-index-page []
   (html5
@@ -23,10 +20,10 @@
       ;;  [:option {:value :CharCode} "Name"]
        (map
         #(vec
-          (concat [:option]  [{:value (str (second %))} (str (first %))])) (get-char-codes url))]
-      [:div.col] 
-      [:select.custom-select.user-select.ml-1.col-4 {:multiple true}]]
-     
+          (concat [:option]  [{:value (str (second %))} (str (first %))])) (req/get-char-codes))]
+      [:select.custom-select.user-select.ml-1.col-4 {:multiple true}]
+      [:div.col]]
+
      [:div.row.mt-3
       [:div.col]
       [:div.input-group.col-3
@@ -37,6 +34,6 @@
       [:div.col]]]
     (hpage/include-js "js/main.js")]))
 
-
-(defn post-currency [req]
-  )
+(defn get-currency 
+  [days char-codes]
+    (str (req/get-currency days char-codes)))
